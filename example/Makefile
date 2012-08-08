@@ -1,10 +1,10 @@
 all: compile
 
 compile:
-	nvcc example.cu -o output
+	@nvcc example.cu -o output
 
 clean:
-	rm -f output
+	@rm -f output
 
 x:
-	./output
+	@./output

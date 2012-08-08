@@ -14,6 +14,7 @@ __global__ void add(int *a, int *b, int *c) {
 }
 
 int main() {
+	cudaDeviceProp prop;
 	int a[N], b[N], c[N];	
 	int *dev_a, *dev_b, *dev_c;
 
@@ -34,9 +35,13 @@ int main() {
 	cudaMemcpy(c, dev_c, N * sizeof(int), cudaMemcpyDeviceToHost);
 	
 
-	for( int i=0; i<N; i++){
-		cout << a[i] << " " << b[i] << " " << c[i] << endl;
-	}
+	//for( int i=0; i<N; i++){
+	//	cout << a[i] << " " << b[i] << " " << c[i] << endl;
+	//}
+
+	cudaGetDeviceProperties(&prop,0);
+
+	cout << prop.maxThreadsPerBlock << endl;
 
 	cudaFree(dev_a);
 	cudaFree(dev_b);

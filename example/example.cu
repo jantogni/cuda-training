@@ -27,7 +27,7 @@ int main() {
     a_cpu = (float *) malloc(N * sizeof(float));
 
     /* Ejecuta el kernel con 3 bloques de 20 hebras cada uno. */
-    consecutivos<<<3, 20>>>(a_gpu);
+    consecutivos<<<4, 15>>>(a_gpu);
 
     /* Copia el arreglo de la GPU a la CPU. */
     cudaMemcpy(a_cpu, a_gpu, N * sizeof(float), cudaMemcpyDeviceToHost);
