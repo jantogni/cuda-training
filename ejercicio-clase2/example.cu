@@ -49,5 +49,7 @@ int main(){
 	cout.precision(100);
 	cout << fixed << "El valor de pi/4: " << pi_4 << endl;
 
+	cudaFree(dev_val);
+
 	return 0;
 }
