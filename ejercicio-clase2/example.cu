@@ -3,7 +3,7 @@
 #include <cuda.h>
 #include <iostream>
 
-#define N 100000000
+#define N 100
 
 using namespace std;
 
