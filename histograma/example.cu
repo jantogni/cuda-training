@@ -3,7 +3,7 @@
 #include <cuda.h>
 #include <iostream>
 
-#define N 51200
+#define N 512000
 #define HIST 256
 
 using namespace std;
