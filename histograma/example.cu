@@ -17,7 +17,7 @@ void histograma_cpu(int * data, int * counter){
 __global__ void histograma_gpu(int * data, int * counter){
 	int tid = threadIdx.x + blockDim.x * blockIdx.x;
 	if(tid < N)
-		atomicAdd(&(counter[tid]),1);
+		atomicAdd(&(counter[data[tid]]),1);
 }
 
 void showDeviceProperties(){
@@ -69,7 +69,7 @@ int main(){
 	histograma_cpu(data, counter_cpu);
 
 	/*Llamado a GPU*/
-	histograma_gpu<<<ceil(N/512.0),512>>> (dev_data, dev_counter);
+	histograma_gpu<<< ceil(N/512.0) , 512 >>> (dev_data, dev_counter);
 	//cudaThreadSynchronize();
         //cout << cudaGetErrorString(cudaGetLastError()) << endl;
 
@@ -77,9 +77,9 @@ int main(){
 	cudaMemcpy(counter, dev_counter, HIST * sizeof(int), cudaMemcpyDeviceToHost);
 
 	/*Mostrando por pantalla*/
-	//cout << "i\tGPU\tCPU" << endl;
-	//for(i=0; i<HIST; i++)
-	//	cout << i << "\t" << counter[i] << "\t" << counter_cpu[i] << endl;
+	cout << "i\tGPU\tCPU" << endl;
+	for(i=0; i<HIST; i++)
+		cout << i << "\t" << counter[i] << "\t" << counter_cpu[i] << endl;
 
 	return 0;
 }
