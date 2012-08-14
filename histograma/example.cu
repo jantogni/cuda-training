@@ -10,25 +10,29 @@ using namespace std;
 
 void histograma_cpu(int * data, int * counter){
 	int i;
-
 	for(i=0; i<N; i++)
 		counter[data[i]]++;
-
-	//for(i=0; i<HIST; i++)
-	//	cout << i << " " << counter[i] << endl;
 }
 
 __global__ void histograma_gpu(int * data, int * counter){
 	int tid = threadIdx.x + blockDim.x * blockIdx.x;
 	if(tid < N)
 		atomicAdd(&(counter[tid]),1);
-		//counter[data[tid]]++;
-	__syncthreads();
 }
 
+void showDeviceProperties(){
+        cudaDeviceProp prop;
+        cudaGetDeviceProperties(&prop,0);
+        cout << "Max Threads: " << prop.maxThreadsPerBlock << endl;
+        cout << "Max Grid Size: " << prop.maxGridSize[0] << " " << prop.maxGridSize[1] << " " << prop.maxGridSize[2] << endl;
+        cout << "Max Threads Dim: " << prop.maxThreadsDim[0] << " " << prop.maxThreadsDim[1] << " " << prop.maxThreadsDim[2] << endl;
+}
+
+
 int main(){
+	//showDeviceProperties();
 	//#ifndef CUDA_NO_SM_11_ATOMIC_INTRINSICS
-	//	printf("WARNING! Not using atomics!\n");
+	//	cout << "Not using atomics" << endl;
 	//#endif
 
 	/* Variables */
@@ -66,16 +70,16 @@ int main(){
 
 	/*Llamado a GPU*/
 	histograma_gpu<<<ceil(N/512.0),512>>> (dev_data, dev_counter);
-	cudaThreadSynchronize();
-        cout << cudaGetErrorString(cudaGetLastError()) << endl;
+	//cudaThreadSynchronize();
+        //cout << cudaGetErrorString(cudaGetLastError()) << endl;
 
 	/*Copiando al host*/
 	cudaMemcpy(counter, dev_counter, HIST * sizeof(int), cudaMemcpyDeviceToHost);
 
 	/*Mostrando por pantalla*/
-	cout << "i\tGPU\tCPU" << endl;
-	for(i=0; i<HIST; i++)
-		cout << i << "\t" << counter[i] << "\t" << counter_cpu[i] << endl;
+	//cout << "i\tGPU\tCPU" << endl;
+	//for(i=0; i<HIST; i++)
+	//	cout << i << "\t" << counter[i] << "\t" << counter_cpu[i] << endl;
 
 	return 0;
 }
