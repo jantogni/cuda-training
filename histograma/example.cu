@@ -3,7 +3,7 @@
 #include <cuda.h>
 #include <iostream>
 
-#define N 5120
+#define N 51200
 #define HIST 256
 
 using namespace std;
@@ -21,7 +21,6 @@ __global__ void histograma_gpu_global(int * data, int * counter){
 }
 
 __global__ void histograma_gpu_shared(int * data, int * counter){
-	//int i;
 	int tid = threadIdx.x + blockDim.x * blockIdx.x;
 
 	__shared__ int h_sh[HIST];
@@ -74,6 +73,11 @@ int main(){
 	int * counter_shared;
 	int * dev_shared_counter;
 
+	cudaEvent_t start, stop;
+	float time_global, time_shared, time_cpu;
+	cudaEventCreate(&start);
+	cudaEventCreate(&stop);
+
 	/*Inicialización de datos y copiado a Device*/
 	data = (int *)malloc(N * sizeof(int));
 	cudaMalloc((void**)&dev_data, N * sizeof(int));
@@ -100,25 +104,51 @@ int main(){
 
 	/* Llamado a CPU*/
 	cout << "Resultados histograma" << endl;
+	cudaEventRecord(start, 0);
 	histograma_cpu(data, counter_cpu);
+	cudaEventRecord(stop, 0);
+	cudaEventSynchronize(stop);
+	cudaEventElapsedTime(&time_cpu, start, stop);
 
 	/*Llamado a GPU Global*/
+	cudaEventRecord(start, 0);
 	histograma_gpu_global<<< ceil(N/512.0) , 512 >>> (dev_data, dev_global_counter);
-	cudaThreadSynchronize();
+	//cudaThreadSynchronize();
         //cout << cudaGetErrorString(cudaGetLastError()) << endl;
+	cudaEventRecord(stop, 0);
+	cudaEventSynchronize(stop);
+	cudaEventElapsedTime(&time_global, start, stop);
 
 	/*Llamado a GPU Shared*/
+	cudaEventRecord(start, 0);
 	histograma_gpu_shared<<< ceil(N/512.0) , 512 >>> (dev_data, dev_shared_counter);
-	cudaThreadSynchronize();
+	//cudaThreadSynchronize();
+        //cout << cudaGetErrorString(cudaGetLastError()) << endl;
+	cudaEventRecord(stop, 0);
+	cudaEventSynchronize(stop);
+	cudaEventElapsedTime(&time_shared, start, stop);
 
 	/*Copiando al host*/
 	cudaMemcpy(counter_global, dev_global_counter, HIST * sizeof(int), cudaMemcpyDeviceToHost);
 	cudaMemcpy(counter_shared, dev_shared_counter, HIST * sizeof(int), cudaMemcpyDeviceToHost);
 
+	cout << "Tiempo para Histograma CPU " << time_cpu  << endl;
+	cout << "Tiempo para Histograma Global " << time_global  << endl;
+	cout << "Tiempo para Histograma Shared " << time_shared  << endl;
+
 	/*Mostrando por pantalla*/
-	cout << "i\tGLOBAL\tSHARED\tCPU" << endl;
-	for(i=0; i<HIST; i++)
-		cout << i << "\t" << counter_global[i] << "\t" << counter_shared[i]  << "\t" << counter_cpu[i] << endl;
+	//cout << "i\tGLOBAL\tSHARED\tCPU" << endl;
+	//for(i=0; i<HIST; i++)
+	//	cout << i << "\t" << counter_global[i] << "\t" << counter_shared[i]  << "\t" << counter_cpu[i] << endl;
+
+	cudaFree(dev_data);
+	cudaFree(dev_global_counter);
+	cudaFree(dev_shared_counter);
+
+	free(data);
+	free(counter_cpu);
+	free(counter_global);
+	free(counter_shared);
 
 	return 0;
 }
