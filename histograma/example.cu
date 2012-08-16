@@ -132,14 +132,21 @@ int main(){
 	cudaMemcpy(counter_global, dev_global_counter, HIST * sizeof(int), cudaMemcpyDeviceToHost);
 	cudaMemcpy(counter_shared, dev_shared_counter, HIST * sizeof(int), cudaMemcpyDeviceToHost);
 
-	cout << "Tiempo para Histograma CPU " << time_cpu  << endl;
-	cout << "Tiempo para Histograma Global " << time_global  << endl;
-	cout << "Tiempo para Histograma Shared " << time_shared  << endl;
+
+
+	/*Resultados*/
+
+	cout << "Tiempo para Histograma CPU \t" << time_cpu  << "[ms]" << endl;
+	cout << "Tiempo para Histograma Global \t" << time_global  << "[ms]" << endl;
+	cout << "Tiempo para Histograma Shared \t" << time_shared  << "[ms]" << endl;
 
 	/*Mostrando por pantalla*/
 	//cout << "i\tGLOBAL\tSHARED\tCPU" << endl;
 	//for(i=0; i<HIST; i++)
 	//	cout << i << "\t" << counter_global[i] << "\t" << counter_shared[i]  << "\t" << counter_cpu[i] << endl;
+
+	cudaEventDestroy(start);
+	cudaEventDestroy(stop);
 
 	cudaFree(dev_data);
 	cudaFree(dev_global_counter);

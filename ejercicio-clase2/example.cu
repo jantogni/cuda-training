@@ -21,10 +21,12 @@ void showDeviceProperties(){
 	cout << "Max Threads: " << prop.maxThreadsPerBlock << endl;
 	cout << "Max Grid Size: " << prop.maxGridSize[0] << " " << prop.maxGridSize[1] << " " << prop.maxGridSize[2] << endl;
 	cout << "Max Threads Dim: " << prop.maxThreadsDim[0] << " " << prop.maxThreadsDim[1] << " " << prop.maxThreadsDim[2] << endl;
+	cout << "MultiProcessor Count: " << prop.multiProcessorCount << endl;
+	cout << "Warp Size: " << prop.warpSize << endl;
 }
 
 int main(){
-	//showDeviceProperties();
+	showDeviceProperties();
 	int i;
 	float val[N];
 	float *dev_val;
