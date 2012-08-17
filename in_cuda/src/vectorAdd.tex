@@ -1,3 +1,10 @@
-\frame{
+\begin{frame}[fragile]
 	\frametitle{Suma de Vectores}
-}
+	\begin{lstlisting}
+		__global__ void add(int *a, int *b, int *c) {
+		        int i = blockIdx.x * blockDim.x + threadIdx.x;
+        		if(i<N)
+                		c[i] = a[i] + b[i];
+		}
+	\end{lstlisting}
+\end{frame}

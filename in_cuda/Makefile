@@ -13,6 +13,7 @@ pdf: $(PDFFILES)
 
 clean:
 	@rubber --clean $(TEXFILES:.tex=)
+	@rm *.vrb
 
 distclean: clean
 	@rubber --clean --pdf $(TEXFILES:.tex=)
