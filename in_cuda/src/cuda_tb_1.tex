@@ -1,0 +1,11 @@
+\frame{
+	\frametitle{Hebras y Bloques}
+	\begin{itemize}
+		\item Cada hebra se ejecuta en un Streaming processor.
+		\item Un bloque es una agrupación fija de hebras.
+		\item Cada bloque se ejecuta en un solo Streaming Multiprocessor.
+		\item Un SM puede tener asignados varios bloques.
+		\item Kernel: función invocada desde la CPU que se ejecuta en la GPU. Recibe como parámetro 
+			estructuras que definen la cantidad de bloques y la cantidad de hebras por bloque.
+	\end{itemize}
+}
