@@ -28,7 +28,9 @@ __global__ void reduceVector(int * input, int * output, int * sub_sum){
 
 		element = element/2;
 	}
-	sub_sum[blockIdx.x] = output[0];
+	
+	if(thread == 0)
+		sub_sum[blockIdx.x] = output[thread];
 }
 
 int main() {
@@ -61,9 +63,6 @@ int main() {
 
 	cudaMemcpy(output, dev_output, N * sizeof(int), cudaMemcpyDeviceToHost);
 	cudaMemcpy(sub_sum, dev_sub_sum, blocks * sizeof(int), cudaMemcpyDeviceToHost);
-
-	//for(i=0; i<N/2; i++)
-	//	cout << i << " " << output[i] << " " << endl;
 
 	for(i=0; i<blocks; i++)
 		cout << i << " " << sub_sum[i] << " " << endl;
