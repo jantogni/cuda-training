@@ -39,7 +39,7 @@ __global__ void histograma_gpu_shared(int * data, int * counter){
 	__syncthreads();
 
 	if(tid < N){
-		if(threadIdx.x < 256)
+		if(threadIdx.x < HIST)
 			atomicAdd(&(counter[threadIdx.x]),h_sh[threadIdx.x]);
 	}
 	__syncthreads();	
